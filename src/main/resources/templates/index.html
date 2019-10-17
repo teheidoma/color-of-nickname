@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 col-10 offset-1" style="padding-top: 10%">
+            <form action="#">
+                <div class="form-group">
+                    <label for="nickname">Nickname</label>
+                    <input type="text" class="form-control" id="nickname" placeholder="Enter nickname"/>
+                </div>
+                <button id="send" class="btn btn-primary" style="padding-top: 5px">Get color</button>
+
+            </form>
+        </div>
+    </div>
+    <div class="row" style="padding-top: 25px">
+        <div class="col-md-6 offset-md-3 col-10 offset-1">
+            <button class="btn btn-primary" id="rgb">Copy RGB</button>
+            <button class="btn btn-primary" id="hex">Copy HEX</button>
+        </div>
+    </div>
+
+
+</div>
+
+<script th:src="@{js/jquery-3.4.1.min.js}"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script>
+    var gdata;
+    $(document).ready(function () {
+        $("#send").click(function () {
+            $.ajax({
+                url: '/color',
+                dataType: 'json',
+                data: {"nickname": $("#nickname")[0].value},
+                success: function (data, status) {
+                    gdata = data;
+                    console.log(data);
+                    $("body")[0].style.backgroundColor = "rgb(" + data["rgb"] + ")";
+                }
+            })
+        });
+        $("#rgb").click(function () {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val(gdata["rgb"]).select();
+            document.execCommand("copy");
+            $temp.remove();
+        });
+        $("#hex").click(function () {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val(gdata["hex"]).select();
+            document.execCommand("copy");
+            $temp.remove();
+        })
+    })
+</script>
+</body>
+</html>
